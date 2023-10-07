@@ -1,25 +1,71 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect ,useState} from "react";
+import scrollreveal from "scrollreveal";
+import Header from "./containers/Header";
+import Footer from "./containers/Footer";
+import About from './containers/About';
+import ScrollToTop from "./components/ScrollToTop";
+import Menus from "./containers/Menus";
+import { CartProvider } from './context/CartContext';
+import axios from 'axios';
+export default function App() {
+  const [menuItems, setMenuItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const sr = scrollreveal({
+      origin: "top",
+      distance: "80px",
+      duration: 2000,
+      reset: false,
+    });
+    sr.reveal(
+      `
+        nav,
+        #home,
+        #services,
+        #portfolio,
+        #testimonials,
+        #products,
+        #newsletter,
+        .footer
+    `,
+      {
+        opacity: 0,
+        interval: 200,
+      }
+    );
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/category/all'); 
+                setCategories(response.data);
+            } catch (error) {
+                console.error('Error fetching categories: ', error);
+            }
+        };
 
-function App() {
+        const fetchMenuItems = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/menu/all');  // Fetch all menu items
+                setMenuItems(response.data);  // Store fetched items to state
+            } catch (error) {
+                console.error('Error fetching menu items: ', error);
+            }
+        };
+
+        fetchMenuItems();
+
+        fetchCategories();
+
+
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <CartProvider>
+      <Header menuItems={menuItems}/>
+      <About/>
+      <Menus menuItems={menuItems} />
+      <Footer/>
+      <ScrollToTop/>
+    </CartProvider>
+    </>
   );
 }
-
-export default App;
