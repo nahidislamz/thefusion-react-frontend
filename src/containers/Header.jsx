@@ -25,8 +25,8 @@ export default function Header() {
     const cart = useContext(CartContext);
     const [navbarState, setNavbarState] = useState(false);
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleCloseCart = () => setShow(false);
+    const handleShowCart = () => setShow(true);
     const productsCount = cart.items.reduce((sum, name) => sum + name.quantity, 0);
     const navLinks = [
         { href: "#home", label: "Home" },
@@ -37,9 +37,14 @@ export default function Header() {
     ];
 
     const [open, setOpen] = useState(false);
-    const _handleClose = () => setOpen(false);
+    const _handleClose = () => {
+        setOpen(false);
+        window.location.reload();
+    }
+    
 
     const handleClickOpen = () => {
+        handleCloseCart();
         setOpen(true);
     };
     return (
@@ -49,7 +54,7 @@ export default function Header() {
                     <img src={logo} alt="Logo" style={{ marginRight: "auto", cursor: "pointer" }} />
                     <Box mr={2}>  {/* Added Box to manage spacing */}
                         <IconButton color="inherit"
-                            onClick={handleShow}
+                            onClick={handleShowCart}
                         >
                             <Badge badgeContent={productsCount} color="error">
                                 <ShoppingCartIcon />
@@ -63,11 +68,11 @@ export default function Header() {
             </AppBar>
             <Dialog
                 open={show}
-                onClose={handleClose}
+                onClose={handleCloseCart}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title" onClose={handleClose}>
+                <DialogTitle id="alert-dialog-title" onClose={handleCloseCart}>
                     Shopping Cart
                 </DialogTitle>
                 <DialogContent>
@@ -88,7 +93,7 @@ export default function Header() {
                         </>
 
                     ) : (
-                        <EmptyCart handleClose={handleClose}/>
+                        <EmptyCart handleClose={handleCloseCart}/>
                     )}
                 </DialogContent>
                 {productsCount > 0 && (
@@ -111,23 +116,23 @@ export default function Header() {
                             >
                                 Place Order
                             </Button>
-                            <Dialog open={open} onClose={_handleClose} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="alert-dialog-title"
-                                sx={{ textAlign: "center" }} color="warning.main" 
-                                onClose={handleClose}>
-                                    Checkouts
-                                </DialogTitle>
-                                <DialogContent>
-                                <Box width="100%"justifyContent="center">
-                                    
-                                    <Checkout/>
-                                </Box>
-                                </DialogContent>
-                                
-                            </Dialog>
+                        
                         </Box>
                     </DialogActions>
                 )}
+            </Dialog>
+            <Dialog open={open} onClose={_handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="alert-dialog-title"
+                sx={{ textAlign: "center" }} color="warning.main" 
+                onClose={_handleClose}>
+                    Checkouts
+                </DialogTitle>
+                <DialogContent>
+                <Box width="100%"justifyContent="center"> 
+                    <Checkout/>
+                </Box>
+                </DialogContent>
+                                
             </Dialog>
             <Drawer anchor="right" open={navbarState} onClose={() => setNavbarState(false)}>
                 <List style={{ width: 250 }}>
