@@ -14,13 +14,8 @@ import { CartContext } from '../context/CartContext';
 
 function Cart(props) {
   const cart = React.useContext(CartContext);
-  const { id, quantity, menus } = props;
+  const { id, quantity, name,itemTotal } = props;
 
-  const getProductData = (id, menus) => {
-    return menus.find(item => item.id === id);
-  }
-
-  const productData = getProductData(id, menus);
 
   return (
     <TableContainer>
@@ -30,13 +25,13 @@ function Cart(props) {
             <TableCell>
                 <Badge badgeContent={'x'+quantity} color="warning">
                 <Typography variant="h5" gutterBottom>
-                  {productData.name}
+                  {name}
                 </Typography>
                 </Badge>
             </TableCell>
             <TableCell align="right">
               <Typography variant='h6'>
-                £{ (quantity * productData.price).toFixed(2) }
+                £{ itemTotal }
               </Typography>
             </TableCell>
             <TableCell align="right">

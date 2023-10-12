@@ -65,17 +65,41 @@ useEffect(() => {
   };
 
   const addOneToCart = (id) => {
-    const quantity = getProductQuantity(id);
-    setCart((current) =>
-      quantity === 0
-        ? [...current, { id, quantity: 1 }]
-        : current.map((product) =>
-            product.id === id
-              ? { ...product, quantity: product.quantity + 1 }
-              : product
-          )
-    );
+    //const quantity = getProductQuantity(id);
+    const productData = getProductData(id); // Assume this function returns product details like name and price
+    
+    setCart((current) => {
+      // Check if the product is already in the cart
+      const existingProductIndex = current.findIndex((product) => product.id === id);
+      
+      // If it's not in the cart, add it with quantity 1
+      if (existingProductIndex === -1) {
+        return [
+          ...current,
+          {
+            id,
+            name: productData.name,
+            quantity: 1,
+            total: productData.price
+          }
+        ];
+      }
+      
+      // If it is in the cart, update the quantity and total price
+      return current.map((product, index) =>
+        index === existingProductIndex
+          ? {
+              ...product,
+              quantity: product.quantity + 1,
+              total: (product.quantity + 1) * productData.price
+            }
+          : product
+      );
+    });
   };
+  
+
+  
 
   const removeOneFromCart = (id) => {
     // Retrieve the cart from localStorage and parse it to an object

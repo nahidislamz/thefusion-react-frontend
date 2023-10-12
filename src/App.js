@@ -7,6 +7,11 @@ import ScrollToTop from "./components/ScrollToTop";
 import Menus from "./containers/Menus";
 import { CartProvider } from './context/CartContext';
 import axios from 'axios';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_x0a3VuPvX5kedZC5InT5M4tY00ddR41quZ'); 
+
 export default function App() {
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -60,11 +65,13 @@ export default function App() {
   return (
     <>
     <CartProvider>
-      <Header menuItems={menuItems}/>
+    <Elements stripe={stripePromise}>
+    <Header/>
       <About/>
       <Menus menuItems={menuItems} />
       <Footer/>
       <ScrollToTop/>
+    </Elements>
     </CartProvider>
     </>
   );

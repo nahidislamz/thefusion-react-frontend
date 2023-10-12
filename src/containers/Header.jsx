@@ -19,8 +19,9 @@ import Box from "@mui/material/Box";
 import logo from "../assets/logo.svg";
 import Hero from "../components/Hero";
 import Cart from "../components/Cart";
-
-export default function Header({ menuItems }) {
+import Checkout from "../components/Checkout";
+import EmptyCart from "../components/EmptyCart";
+export default function Header() {
     const cart = useContext(CartContext);
     const [navbarState, setNavbarState] = useState(false);
     const [show, setShow] = useState(false);
@@ -35,6 +36,12 @@ export default function Header({ menuItems }) {
         { href: "#contact", label: "Contact" },
     ];
 
+    const [open, setOpen] = useState(false);
+    const _handleClose = () => setOpen(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
     return (
         <>
             <AppBar position="fixed" color="default">
@@ -71,14 +78,17 @@ export default function Header({ menuItems }) {
                                 <Cart
                                     key={idx}
                                     id={currentItem.id}
+                                    name = {currentItem.name}
                                     quantity={currentItem.quantity}
-                                    menus={menuItems}
+                                    itemTotal={currentItem.total}
                                 />
                             ))}
                             <h4 style={{ textAlign: 'right' }}>Total: ${cart.getTotalCost().toFixed(2)}</h4>
+
                         </>
+
                     ) : (
-                        <h3>There are no items in your cart!</h3>
+                        <EmptyCart handleClose={handleClose}/>
                     )}
                 </DialogContent>
                 {productsCount > 0 && (
@@ -97,9 +107,24 @@ export default function Header({ menuItems }) {
                                         backgroundColor: "#fc4958"
                                     }
                                 }}
+                                onClick={handleClickOpen}
                             >
                                 Place Order
                             </Button>
+                            <Dialog open={open} onClose={_handleClose} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="alert-dialog-title"
+                                sx={{ textAlign: "center" }} color="warning.main" 
+                                onClose={handleClose}>
+                                    Checkouts
+                                </DialogTitle>
+                                <DialogContent>
+                                <Box width="100%"justifyContent="center">
+                                    
+                                    <Checkout/>
+                                </Box>
+                                </DialogContent>
+                                
+                            </Dialog>
                         </Box>
                     </DialogActions>
                 )}
